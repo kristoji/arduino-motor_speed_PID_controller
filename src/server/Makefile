@@ -1,4 +1,4 @@
-TARGET=shaft_encoder
+TARGET=h_bridge
 HEX = $(TARGET).hex
 BINS=$(TARGET).elf 
 OBJS=my_uart.o 
