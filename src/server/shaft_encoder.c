@@ -37,13 +37,11 @@ void print_status_encoder(state_t *enc, int tot_enc)
         unsigned char out[1024];
         sprintf((char*) out, 
           "encoder: [%d]\n"
-          "prev value    = %d%d\n"
-          "curr value    = %d%d\n"
-          "counter value = %d\n\n", 
+          "counter value = %d\n"
+          "speed         = %d\n\n", 
           i, 
-          (enc[i].prev_value & 0x2) >> 1, enc[i].prev_value & 0x1,
-          (enc[i].curr_value & 0x2) >> 1, enc[i].curr_value & 0x1,
-          enc[i].counter
+          enc[i].counter,
+          enc[i].speed
         );
         UART_putString(out);
       }

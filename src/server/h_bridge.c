@@ -60,7 +60,7 @@ void print_status_hbridge()
 		"Left Motor:\n"
 		"\tpin9 = %u\n\tpin10 = %u\n"
 		"Right Motor:\n"
-		"\tpin11 = %u\n\tpin12 = %u\n",
+		"\tpin11 = %u\n\tpin12 = %u\n\n",
 		(int) OCR2A, (int) OCR2B,
 		(int) OCR1AL, (int) OCR1BL
 	);

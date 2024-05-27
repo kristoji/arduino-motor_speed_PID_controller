@@ -11,6 +11,7 @@
 #include "my_uart.h"
 #include "h_bridge.h"
 #include "shaft_encoder.h"
+#include "pid.h"
 
 
 /*************************************************

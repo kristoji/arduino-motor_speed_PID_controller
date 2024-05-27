@@ -28,6 +28,8 @@
 #include "my_uart.h"
 
 typedef struct state_s {
+  int speed;
+  int old_cnt;
   int counter;
 
   // val for index 0-4
