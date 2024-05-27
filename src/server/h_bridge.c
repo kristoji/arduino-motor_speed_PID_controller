@@ -23,24 +23,6 @@ void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask)
   DDRH |= porth_mask;
 }
 
-char get_input_hbridge()
-{
-  char in[1024];
-  int len_in = UART_getString(in); 
-  
-  while(len_in != 3 || (in[0] != 'h' && in[0] != 'l')) 
-  {
-    UART_putString(
-			"Usage: \"h\" for higher speed,"
-			" \"l\" for lower speed\n"
-			);
- 
-    len_in = UART_getString(in);
-  }
-
-  return in[0];
-}
-
 void update_hbridge(char in)
 {
     static short int intensity = 0;

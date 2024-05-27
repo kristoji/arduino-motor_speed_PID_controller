@@ -37,6 +37,10 @@ ISR(TIMER5_COMPA_vect)
   timer_irq = 1;
 }
 
+ISR(USART0_RX_vect) {
+    unsigned char received_byte = UDR0;
+	update_hbridge(received_byte);
+}
 
 /*************************************************
  *                     MAIN                      *
@@ -45,22 +49,18 @@ ISR(TIMER5_COMPA_vect)
 
 int main(void)
 {
-    UART_init();
-    setup_hbridge(PWMB_MASK, PWMH_MASK);
-    // setup_encoder(ENC_MASK, TIMER_DELAY);
+	UART_init();
+	setup_hbridge(PWMB_MASK, PWMH_MASK);
+	setup_encoder(ENC_MASK, TIMER_DELAY);
 
-    while(1)
-    {
-        // if (timer_irq)
-        // {
-        //     print_status_encoder(enc, TOTAL_ENCODERS);
-        //     timer_irq = 0;
-        // }
-        // sleep_mode();
-
-        char in = get_input_hbridge();
-        update_hbridge(in);
-        print_status_hbridge();
-
-    }
+	while(1)
+	{
+		if (timer_irq)
+		{
+				timer_irq = 0;
+				print_status_hbridge();
+				print_status_encoder(enc, TOTAL_ENCODERS);
+		}
+		sleep_mode();
+	}
 }
