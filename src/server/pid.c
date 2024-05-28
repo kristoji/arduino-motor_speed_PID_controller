@@ -45,7 +45,7 @@ void update_pid(state_t *enc, uint8_t tot_enc)
     {
         int error = enc[i].pid.target_speed - enc[i].pid.speed;
         error = clamp(error, 100);
-        int ref_speed = enc[i].pid.target_speed + error;
+        int ref_speed = enc[i].pid.speed + error;
 
         enc[i].pid.integral_err = clamp(enc[i].pid.integral_err + error, 1000);
         enc[i].pid.output = ref_speed +  Kp * error + Ki * enc[i].pid.integral_err;

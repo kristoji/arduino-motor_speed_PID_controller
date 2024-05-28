@@ -26,7 +26,7 @@
 #define UPDATE_PID_MS 50
 
 #define Kp 1
-#define Ki 0
+#define Ki 0.5
 
 typedef struct pid_s
 {
