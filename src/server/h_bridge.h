@@ -40,6 +40,7 @@
 #include <avr/sleep.h>
 #include "./avr_common/uart.h" 
 #include "my_uart.h"
+#include "shaft_encoder.h"
 
 // phase-correct PWM, non inverted, max 20KHz
 #define TCCR1A_MASK (1<<WGM10)|(1<<COM1A1)|(1<<COM1B1)
@@ -54,5 +55,7 @@ void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask);
 char get_input_hbridge(void);
 
 void update_hbridge(char in);
+
+void control_hbridge(state_t *enc, uint8_t tot_enc);
 
 void print_status_hbridge(void);

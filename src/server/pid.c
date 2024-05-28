@@ -1,6 +1,6 @@
 #include "pid.h"
 
-double clamp(double value, double max)
+int clamp(int value, int max)
 {
     if (value > max)
     {
@@ -13,22 +13,9 @@ double clamp(double value, double max)
     return value;
 }
 
-// int clamp(int value, int max)
-// {
-//     if (value > max)
-//     {
-//         return max;
-//     }
-//     else if (value < -max)
-//     {
-//         return -max;
-//     }
-//     return value;
-// }
-
 void setup_pid()
 {
-    UART_putString("Setting up PID\n");
+    UART_putString((uint8_t*)"Setting up PID\n");
     
     // set timer
     TCCR3A = 0;
@@ -42,41 +29,58 @@ void setup_pid()
 }
 
 
-void compute_speed(state_t *enc)
+void compute_speed(state_t *enc, uint8_t tot_enc)
 {
-    for (int i = 0; i < TOTAL_ENCODERS; i++) 
+    for (int i = 0; i < tot_enc; i++) 
     {
         // double speed = (double)(enc->counter - enc->old_cnt)/(double)UPDATE_PID_MS;
-        enc[i].speed = enc[i].counter - enc[i].old_cnt;
-        enc[i].old_cnt = enc[i].counter;
+        enc[i].pid.speed = enc[i].counter - enc[i].pid.old_cnt;
+        enc[i].pid.old_cnt = enc[i].counter;
     }
 }
 
-double update_pid(double speed, double target_speed)
+void update_pid(state_t *enc, uint8_t tot_enc)
 {
-    static double integral_err = 0;
+    for (int i = 0; i < tot_enc; i++) 
+    {
+        int error = enc[i].pid.target_speed - enc[i].pid.speed;
+        error = clamp(error, 100);
+        int ref_speed = enc[i].pid.target_speed + error;
 
-    double error = target_speed - speed;
-    error = clamp(error, 100);
-    double ref_speed = target_speed + error;
+        enc[i].pid.integral_err = clamp(enc[i].pid.integral_err + error, 1000);
+        enc[i].pid.output = ref_speed +  Kp * error + Ki * enc[i].pid.integral_err;
 
-    double output = 0;
-
-    integral_err = clamp(integral_err + error, 1000);
-    output = ref_speed +  Kp * error + Ki * integral_err;
-
-    output = clamp(output, 255);
-    return output;
+        enc[i].pid.output = clamp(enc[i].pid.output, 255);
+    }
 }
 
-void print_status_pid(double speed, double target_speed, double output)
+void print_status_pid(state_t *enc, uint8_t tot_enc)
 {
-    unsigned char out[1024];
-    sprintf((char*) out, 
-        "speed: %f\n"
-        "target speed: %f\n"
-        "output: %f\n\n", 
-        speed, target_speed, output
-    );
-    UART_putString(out);
+    for (int i = 0; i < tot_enc; i++) 
+    {
+        unsigned char out[1024];
+        sprintf((char*) out, 
+            "encoder. [%d]\n"
+            "speed: %d\n"
+            "target speed: %d\n"
+            "output: %d\n\n", 
+            i, enc[i].pid.speed, enc[i].pid.target_speed, enc[i].pid.output
+        );
+        UART_putString(out);
+    }
+}
+
+void get_target_speed(state_t *enc, uint8_t tot_enc, char in)
+{
+    for (int i = 0; i < tot_enc; i++) 
+    {
+        if (in == 'w')
+        {
+            enc[i].pid.target_speed += 10;
+        }
+        else if (in == 's')
+        {
+            enc[i].pid.target_speed -= 10;
+        }
+    }
 }

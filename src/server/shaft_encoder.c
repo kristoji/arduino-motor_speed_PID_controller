@@ -2,7 +2,7 @@
 
 void setup_encoder(uint8_t mask, uint16_t timer_duration_ms)
 {
-  UART_putString("Setting up encoders\n");
+  UART_putString((uint8_t*)"Setting up encoders\n");
 
   // set sleep mode
   set_sleep_mode(SLEEP_MODE_IDLE);
@@ -30,20 +30,32 @@ void setup_encoder(uint8_t mask, uint16_t timer_duration_ms)
   sei();
 }
 
+void update_encoder(state_t *enc, int tot_enc)
+{
+  for (int i = 0; i < tot_enc; i++) 
+  {
+    enc[i].prev_value = enc[i].curr_value;
+
+    enc[i].curr_value = 
+      ((PINB & enc[i].msk_1)? 0b10 : 0) | ((PINB & enc[i].msk_0)? 0b01 : 0);
+    
+    uint8_t idx = ((enc[i].prev_value << 2) | (enc[i].curr_value));
+    enc[i].counter += _transition_table[idx];
+
+  }
+}
+
 void print_status_encoder(state_t *enc, int tot_enc) 
 {
   for (int i = 0; i < tot_enc; i++) 
-      {     
-        unsigned char out[1024];
-        sprintf((char*) out, 
-          "encoder: [%d]\n"
-          "counter value = %d\n"
-          "speed         = %d\n\n", 
-          i, 
-          enc[i].counter,
-          enc[i].speed
-        );
-        UART_putString(out);
-      }
-      UART_putString((uint8_t*)"***********************\n");
+  {     
+    unsigned char out[1024];
+    sprintf((char*) out, 
+      "encoder: [%d]\n"
+      "counter value = %d\n\n",
+      i, 
+      enc[i].counter
+    );
+    UART_putString(out);
+  }
 }

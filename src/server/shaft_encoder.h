@@ -26,10 +26,10 @@
 #include <avr/sleep.h>
 #include "./avr_common/uart.h" // includes the printf and initializes it
 #include "my_uart.h"
+#include "pid.h"
 
 typedef struct state_s {
-  int speed;
-  int old_cnt;
+  pid_t pid;
   int counter;
 
   // val for index 0-4
@@ -67,5 +67,7 @@ volatile static const int8_t _transition_table []=
 
 
 void setup_encoder(uint8_t mask, uint16_t timer_duration_ms);
+
+void update_encoder(state_t *enc, int tot_enc);
 
 void print_status_encoder(state_t *enc, int tot_enc);

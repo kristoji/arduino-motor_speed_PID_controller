@@ -2,7 +2,7 @@
 
 void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask)
 {
-  UART_putString("Setting up H-Bridge\n");
+  UART_putString((uint8_t*)"Setting up H-Bridge\n");
 
   // setup timer 1
   TCCR1A=TCCR1A_MASK;
@@ -52,11 +52,36 @@ void update_hbridge(char in)
     }
 }
 
+void control_hbridge(state_t *enc, uint8_t tot_enc)
+{
+  if (enc[0].pid.output > 0)
+  {
+    OCR1AL = enc[0].pid.output;
+    OCR1BL = 0;
+  }
+  else
+  {
+    OCR1AL = 0;
+    OCR1BL = -enc[0].pid.output;
+  }
+
+  if (enc[1].pid.output > 0)
+  {
+    OCR2A = enc[1].pid.output;
+    OCR2B = 0;
+  }
+  else
+  {
+    OCR2A = 0;
+    OCR2B = -enc[1].pid.output;
+  }
+}
+
 
 void print_status_hbridge() 
 {
   unsigned char out[1024];
-  sprintf(out, 
+  sprintf((char*) out, 
 		"Left Motor:\n"
 		"\tpin9 = %u\n\tpin10 = %u\n"
 		"Right Motor:\n"

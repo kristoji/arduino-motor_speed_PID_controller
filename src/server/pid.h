@@ -12,8 +12,6 @@
 
 #include "./avr_common/uart.h" 
 #include "my_uart.h"
-#include "shaft_encoder.h"
-#include "server.h"
 
 /***********************************************************\
  * Clear Timer on Compare Match, or CTC. 
@@ -28,15 +26,32 @@
 #define UPDATE_PID_MS 50
 
 #define Kp 1
-#define Ki 1
+#define Ki 0
 
-double clamp(double value, double max);
-// int clamp(int value, int max);
+typedef struct pid_s
+{
+    int speed;
+    int old_cnt;
+    int target_speed;
+    int integral_err;
+    int output;
+} pid_t;
+
+// forward declaration
+typedef struct state_s state_t;
+
+
+int clamp(int value, int max);
 
 void setup_pid(void);
 
-void compute_speed(state_t *enc);
+void compute_speed(state_t *enc, uint8_t tot_enc);
 
-double update_pid(double speed, double target_speed);
+void update_pid(state_t *enc, uint8_t tot_enc);
 
-void print_status_pid(double speed, double target_speed, double output);
+void print_status_pid(state_t *enc, uint8_t tot_enc);
+
+void get_target_speed(state_t *enc, uint8_t tot_enc, char in);
+
+
+#include "shaft_encoder.h"
