@@ -63,8 +63,10 @@ void print_status_pid(state_t *enc, uint8_t tot_enc)
             "encoder. [%d]\n"
             "speed: %d\n"
             "target speed: %d\n"
-            "output: %d\n\n", 
-            i, enc[i].pid.speed, enc[i].pid.target_speed, enc[i].pid.output
+            // "output: %d\n\n", 
+            "integral: %d\n\n", 
+            // i, enc[i].pid.speed, enc[i].pid.target_speed, enc[i].pid.output
+            i, enc[i].pid.speed, enc[i].pid.target_speed, enc[i].pid.integral_err
         );
         UART_putString(out);
     }
