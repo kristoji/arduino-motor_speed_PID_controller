@@ -37,6 +37,11 @@ typedef struct pid_s
     int output;
 } pid_t;
 
+typedef struct speed_s {
+    int8_t left_wheel;
+    int8_t right_wheel;
+} target_speed_t;
+
 // forward declaration
 typedef struct state_s state_t;
 
@@ -51,7 +56,7 @@ void update_pid(state_t *enc, uint8_t tot_enc);
 
 void print_status_pid(state_t *enc, uint8_t tot_enc);
 
-void get_target_speed(state_t *enc, uint8_t tot_enc, char in);
+void get_target_speed(state_t *enc, uint8_t tot_enc, target_speed_t *target_speed);
 
 
 #include "shaft_encoder.h"

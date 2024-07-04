@@ -32,3 +32,12 @@ clean:
 	rm -rf $(OBJS) $(BINS) *.hex *~ *.o
 
 .SECONDARY:	$(OBJS)
+
+# Include the dependency files
+-include $(OBJS:.o=.d)
+
+# Generate dependency files
+%.d: %.c
+	@$(CC) -MM $(CC_OPTS) $< > $@.tmp
+	@sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.tmp > $@
+	@rm -f $@.tmp

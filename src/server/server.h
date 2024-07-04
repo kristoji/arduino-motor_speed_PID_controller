@@ -6,6 +6,7 @@
 #include <avr/iom2560.h>        // to avoid error in the IDE
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
+#include <string.h>
 
 #include "./avr_common/uart.h" // includes the printf and initializes it
 #include "my_uart.h"
@@ -55,3 +56,6 @@
  *************************************************/
 
 #define TIMER_DELAY 1000
+
+
+

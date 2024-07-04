@@ -72,17 +72,22 @@ void print_status_pid(state_t *enc, uint8_t tot_enc)
     }
 }
 
-void get_target_speed(state_t *enc, uint8_t tot_enc, char in)
+void get_target_speed(state_t *enc, uint8_t tot_enc, target_speed_t *target_speed)
 {
-    for (int i = 0; i < tot_enc; i++) 
-    {
-        if (in == 'w')
-        {
-            enc[i].pid.target_speed += 10;
-        }
-        else if (in == 's')
-        {
-            enc[i].pid.target_speed -= 10;
-        }
-    }
+    // for (int i = 0; i < tot_enc; i++) 
+    // {
+    //     if (in == 'w')
+    //     {
+    //         enc[i].pid.target_speed += 10;
+    //     }
+    //     else if (in == 's')
+    //     {
+    //         enc[i].pid.target_speed -= 10;
+    //     }
+    // }
+     
+
+    enc[0].pid.target_speed = target_speed->right_wheel;
+    enc[1].pid.target_speed = target_speed->left_wheel;
+
 }

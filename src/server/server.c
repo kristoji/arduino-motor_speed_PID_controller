@@ -37,6 +37,12 @@ state_t enc[TOTAL_ENCODERS] =
 };
 
 volatile uint8_t timer_irq = 0;
+int writeIndex = 0;
+uint8_t g_buf[sizeof(target_speed_t)];
+target_speed_t target_speed = {
+    .left_wheel = 0,
+    .right_wheel = 0
+};
 
 
 /*************************************************
@@ -60,10 +66,27 @@ ISR(TIMER3_COMPA_vect)
   control_hbridge(enc, TOTAL_ENCODERS);
 }
 
-ISR(USART0_RX_vect) 
-{
-  // update_hbridge(UDR0);
-  get_target_speed(enc, TOTAL_ENCODERS, UDR0);
+// ISR(USART0_RX_vect) 
+// {
+//   // update_hbridge(UDR0);
+  // get_target_speed(enc, TOTAL_ENCODERS, UDR0);
+// }
+ 
+ISR(USART0_RX_vect) {
+    uint8_t receivedByte = UDR0;
+    
+    g_buf[writeIndex++] = receivedByte;
+
+    if (writeIndex == sizeof(target_speed_t)) {
+        target_speed = *(target_speed_t*)g_buf;
+        // uint8_t out[1024];
+        // sprintf(out, "left_wheel: %d\nright_wheel: %d\n", target_speed.left_wheel, target_speed.right_wheel);
+        // UART_putString(out);
+        memset(g_buf, 0, sizeof(target_speed_t));
+        get_target_speed(enc, TOTAL_ENCODERS, &target_speed);
+        
+        writeIndex = 0;
+    }
 }
 
 
