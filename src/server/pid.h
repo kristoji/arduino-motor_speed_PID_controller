@@ -25,8 +25,8 @@
 
 #define UPDATE_PID_MS 50
 
-#define Kp 1
-#define Ki 0.5
+#define Kp 0.25
+#define Ki 0.125
 
 typedef struct pid_s
 {
@@ -38,8 +38,8 @@ typedef struct pid_s
 } pid_t;
 
 typedef struct speed_s {
-    int8_t left_wheel;
-    int8_t right_wheel;
+    int16_t left_wheel;
+    int16_t right_wheel;
 } target_speed_t;
 
 // forward declaration

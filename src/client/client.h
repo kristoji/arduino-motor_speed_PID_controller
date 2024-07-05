@@ -9,10 +9,11 @@
 
 #include "serial_linux.h"
 
-#define MAX_VEL 50
+#define MAX_VEL 150
+#define ROUND_VEL 15
 #define DEV_JS "/dev/input/js0"
 
 typedef struct speed_s {
-    int8_t left_wheel;
-    int8_t right_wheel;
+    int16_t left_wheel;
+    int16_t right_wheel;
 } target_speed_t;

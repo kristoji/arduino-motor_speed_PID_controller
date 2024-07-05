@@ -47,7 +47,7 @@ void update_pid(state_t *enc, uint8_t tot_enc)
         error = clamp(error, 100);
         int ref_speed = enc[i].pid.speed + error;
 
-        enc[i].pid.integral_err = clamp(enc[i].pid.integral_err + error, 1000);
+        enc[i].pid.integral_err = clamp(enc[i].pid.integral_err + error, 100);
         enc[i].pid.output = ref_speed +  Kp * error + Ki * enc[i].pid.integral_err;
 
         enc[i].pid.output = clamp(enc[i].pid.output, 255);
@@ -74,18 +74,6 @@ void print_status_pid(state_t *enc, uint8_t tot_enc)
 
 void get_target_speed(state_t *enc, uint8_t tot_enc, target_speed_t *target_speed)
 {
-    // for (int i = 0; i < tot_enc; i++) 
-    // {
-    //     if (in == 'w')
-    //     {
-    //         enc[i].pid.target_speed += 10;
-    //     }
-    //     else if (in == 's')
-    //     {
-    //         enc[i].pid.target_speed -= 10;
-    //     }
-    // }
-     
 
     enc[0].pid.target_speed = target_speed->right_wheel;
     enc[1].pid.target_speed = target_speed->left_wheel;

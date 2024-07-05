@@ -80,7 +80,7 @@ ISR(USART0_RX_vect) {
     if (writeIndex == sizeof(target_speed_t)) {
         target_speed = *(target_speed_t*)g_buf;
         // uint8_t out[1024];
-        // sprintf(out, "left_wheel: %d\nright_wheel: %d\n", target_speed.left_wheel, target_speed.right_wheel);
+        // sprintf(out, "left_wheel: %d right_wheel: %d\n", target_speed.left_wheel, target_speed.right_wheel);
         // UART_putString(out);
         memset(g_buf, 0, sizeof(target_speed_t));
         get_target_speed(enc, TOTAL_ENCODERS, &target_speed);
@@ -107,8 +107,8 @@ int main(void)
     if (timer_irq)
     {
       timer_irq = 0;
-      print_status_hbridge();
-      print_status_encoder(enc, TOTAL_ENCODERS);
+      // print_status_hbridge();
+      // print_status_encoder(enc, TOTAL_ENCODERS);
       print_status_pid(enc, TOTAL_ENCODERS);
       UART_putString((uint8_t*)"***********************\n");
     }

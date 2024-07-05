@@ -23,6 +23,21 @@ void send_speed(int fd, target_speed_t* speed)
     // printf("Settings sent\n");
 }
 
+int16_t round_val(int16_t value, int16_t round)
+{
+    int16_t remainder = value % round;
+    // printf("Value: %d, Remainder: %d\n", value, remainder);
+    if (value > 0 && remainder >= (round / 2)+1)
+    {
+        value += round;
+    }
+    else if (value < 0 && -remainder >= (round / 2)+1)
+    {
+        value -= round;
+    }
+    return  ((int16_t)(value / round) * round);
+}
+
 void mapJoystickToWheels(int x, int y, target_speed_t * speed) {
     // Normalize joystick values to the range -1 to 1
     float norm_x = x / 32767.0;
@@ -31,6 +46,9 @@ void mapJoystickToWheels(int x, int y, target_speed_t * speed) {
     // Compute the velocity for each wheel
     speed->left_wheel = (int)(MAX_VEL * (norm_x - norm_y));
     speed->right_wheel = (int)(MAX_VEL * (- norm_y - norm_x));
+
+    speed->left_wheel = round_val(speed->left_wheel, ROUND_VEL);
+    speed->right_wheel = round_val(speed->right_wheel, ROUND_VEL);
 
     // Clamp the velocities to the range -MAX_VEL to MAX_VEL
     if (speed->left_wheel > MAX_VEL) speed->left_wheel = MAX_VEL;
@@ -137,6 +155,7 @@ int main(int argc, const char** argv) {
 
     pthread_join(thread_id, NULL);
     close(js);
+    close(serial_fd);
 
     printf("Program terminated gracefully.\n");
     return 0;
