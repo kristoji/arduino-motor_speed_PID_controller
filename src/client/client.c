@@ -128,10 +128,19 @@ int main(int argc, const char** argv) {
 
     signal(SIGINT, sigint_handler);
 
-    pthread_t thread_id;
-    if (pthread_create(&thread_id, NULL, read_joystick, &js) != 0) {
+    pthread_t js_thread_id;
+    if (pthread_create(&js_thread_id, NULL, read_joystick, &js) != 0) {
         perror("Could not create thread");
         close(js);
+        close(serial_fd);
+        exit(EXIT_FAILURE);
+    }
+
+    pthread_t plot_thread_id;
+    if (pthread_create(&plot_thread_id, NULL, sample, &serial_fd) != 0) {
+        perror("Could not create thread");
+        close(js);
+        close(serial_fd);
         exit(EXIT_FAILURE);
     }
 
@@ -143,17 +152,14 @@ int main(int argc, const char** argv) {
         sleep(1);
 
         pthread_mutex_lock(&lock);
-        // printf("Last event for type 2, number 0: time %u, value %d, type %u, number %u\n",
-        //        last_event_type2_num0.time, last_event_type2_num0.value, last_event_type2_num0.type, last_event_type2_num0.number);
-        // printf("Last event for type 2, number 1: time %u, value %d, type %u, number %u\n",
-        //        last_event_type2_num1.time, last_event_type2_num1.value, last_event_type2_num1.type, last_event_type2_num1.number);
         mapJoystickToWheels(last_event_type2_num0.value, last_event_type2_num1.value, &speed);
         send_speed(serial_fd, &speed);
-        printf("Left wheel: %d, Right wheel: %d\n", speed.left_wheel, speed.right_wheel);
+        // printf("Left wheel: %d, Right wheel: %d\n", speed.left_wheel, speed.right_wheel);
         pthread_mutex_unlock(&lock);
     }
 
-    pthread_join(thread_id, NULL);
+    pthread_join(js_thread_id, NULL);
+    pthread_join(plot_thread_id, NULL);
     close(js);
     close(serial_fd);
 

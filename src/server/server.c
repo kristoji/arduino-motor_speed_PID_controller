@@ -36,6 +36,14 @@ state_t enc[TOTAL_ENCODERS] =
   },
 };
 
+od_status_t od_status = {
+    .x = 0,
+    .y = 0,
+    .theta = 0,
+    .v = 0,
+    .w = 0
+};
+
 volatile uint8_t timer_irq = 0;
 int writeIndex = 0;
 uint8_t g_buf[sizeof(target_speed_t)];
@@ -63,6 +71,7 @@ ISR(TIMER3_COMPA_vect)
 {
   compute_speed(enc, TOTAL_ENCODERS);
   update_pid(enc, TOTAL_ENCODERS);
+  update_odometry(&od_status, enc[1].pid.speed, enc[0].pid.speed);
   control_hbridge(enc, TOTAL_ENCODERS);
 }
 
@@ -109,8 +118,9 @@ int main(void)
       timer_irq = 0;
       // print_status_hbridge();
       // print_status_encoder(enc, TOTAL_ENCODERS);
-      print_status_pid(enc, TOTAL_ENCODERS);
-      UART_putString((uint8_t*)"***********************\n");
+      // print_status_pid(enc, TOTAL_ENCODERS);
+      print_odometry(&od_status, enc);
+      // UART_putString((uint8_t*)"***********************\n");
     }
     sleep_mode();
   }

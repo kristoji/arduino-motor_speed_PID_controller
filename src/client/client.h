@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "serial_linux.h"
+#include "sample.h"
 
 #define MAX_VEL 150
 #define ROUND_VEL 15

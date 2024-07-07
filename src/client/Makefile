@@ -1,8 +1,8 @@
 CC = gcc
-CCOPTS = -std=gnu99
+CCOPTS = -std=gnu99 
 TARGET = client
 BINS = $(TARGET).elf
-SRCS = serial_linux.c client.c
+SRCS = serial_linux.c client.c sample.c plot.c
 OBJS = $(SRCS:.c=.o)
 
 .PHONY: clean all
@@ -10,7 +10,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(BINS)
 
 $(BINS): $(OBJS)
-	$(CC) $(CCOPTS) -o $@ $^
+	$(CC) $(CCOPTS) -o $@ $^ -lm
 
 %.o: %.c
 	$(CC) $(CCOPTS) -c -o $@ $<
