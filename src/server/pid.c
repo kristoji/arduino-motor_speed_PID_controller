@@ -15,7 +15,7 @@ int clamp(int value, int max)
 
 void setup_pid()
 {
-    UART_putString((uint8_t*)"Setting up PID\n");
+    // UART_putString((uint8_t*)"Setting up PID\n");
     
     // set timer
     TCCR3A = 0;

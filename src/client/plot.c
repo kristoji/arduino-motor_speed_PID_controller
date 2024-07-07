@@ -8,7 +8,8 @@
 
 FILE *gnuplotPipe = NULL;
 
-void init_gnuplot() { 
+void init_gnuplot() 
+{ 
     gnuplotPipe = popen("gnuplot -persistent", "w");
 
     if (gnuplotPipe == NULL) {
@@ -31,14 +32,16 @@ void init_gnuplot() {
     }
 }
 
-void close_gnuplot() {
+void close_gnuplot() 
+{
     if (gnuplotPipe != NULL) {
         pclose(gnuplotPipe);
         gnuplotPipe = NULL;
     }
 }
 
-void plot_with_gnuplot(float x, float y, float theta, float v, float w) {
+void plot_with_gnuplot(float x, float y, float theta, float v, float w) 
+{
 
     if (gnuplotPipe == NULL) {
         fprintf(stderr, "Error: Gnuplot pipe is not open\n");
@@ -46,7 +49,7 @@ void plot_with_gnuplot(float x, float y, float theta, float v, float w) {
     }
 
     // Calculate triangle vertices
-    float size = 5; // Size of the triangle
+    float size = 5; 
     float x1 = x + size * cos(theta);
     float y1 = y + size * sin(theta);
     float x2 = x + size * cos(theta + 2.0 * M_PI / 3.0);
@@ -61,6 +64,7 @@ void plot_with_gnuplot(float x, float y, float theta, float v, float w) {
     fprintf(gnuplotPipe, "set label 1 'Velocity' at screen 0.87,0.8 textcolor rgb 'black' font ',14:bold'\n");
     fprintf(gnuplotPipe, "set label 2 'v: %f' at screen 0.87,0.75 font ',12'\n", v);
     fprintf(gnuplotPipe, "set label 3 'w: %f' at screen 0.87,0.7 font ',12'\n", w);
+    
     // Plot the triangle
     fprintf(gnuplotPipe, "plot '-' with filledcurves closed lt 1 lc rgb 'dark-spring-green' notitle, '-' with points pt 7 ps 1 lc rgb 'red' notitle\n\n");
     fprintf(gnuplotPipe, "%f %f\n", x1, y1);

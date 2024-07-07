@@ -2,7 +2,7 @@
 
 void setup_encoder(uint8_t mask, uint16_t timer_duration_ms)
 {
-  UART_putString((uint8_t*)"Setting up encoders\n");
+  // UART_putString((uint8_t*)"Setting up encoders\n");
 
   // set sleep mode
   set_sleep_mode(SLEEP_MODE_IDLE);

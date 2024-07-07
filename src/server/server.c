@@ -119,7 +119,8 @@ int main(void)
       // print_status_hbridge();
       // print_status_encoder(enc, TOTAL_ENCODERS);
       // print_status_pid(enc, TOTAL_ENCODERS);
-      print_odometry(&od_status, enc);
+      // print_odometry(&od_status, enc);
+      send_odometry(&od_status);
       // UART_putString((uint8_t*)"***********************\n");
     }
     sleep_mode();

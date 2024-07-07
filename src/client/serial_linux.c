@@ -6,6 +6,17 @@
 
 #include "serial_linux.h"
 
+int serial_init(const char* name, int baudrate) {
+  int fd = serial_open(name);
+  if (fd == -1) {
+    perror("serial_open");
+    exit(EXIT_FAILURE);
+  }
+  serial_set_interface_attribs(fd, baudrate, 0);
+  serial_set_blocking(fd, 0);
+  return fd;
+}
+
 int serial_set_interface_attribs(int fd, int speed, int parity) {
   struct termios tty;
   memset (&tty, 0, sizeof tty);

@@ -114,3 +114,14 @@ void print_odometry(od_status_t *status, state_t* enc)
     // UART_putString(out);
 
 }
+
+void send_odometry(od_status_t *status)
+{
+    uint8_t* p = (uint8_t*) status;
+
+    for(uint8_t i = 0; i < sizeof(od_status_t); ++i)
+    {
+        UART_putChar(*p);
+        ++p;
+    }
+} 

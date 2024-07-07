@@ -10,6 +10,9 @@ void* sample(void* arg)
 {
     int fd = *(int*)arg;
 
+    // clear the serial buffer
+    uint8_t buf[100];
+    int n = read(fd, buf, 100);
 
     packet_t packet;
     uint16_t prev_timestamp = -1;
@@ -29,33 +32,14 @@ void* sample(void* arg)
 
 void receive_packet(int fd, packet_t* packet)
 {
-    // uint8_t buf[sizeof(packet_t)];
-    // int read_bytes = 0;
-
-    // do  
-    // {
-    //     int n = read(fd, buf + read_bytes, sizeof(packet_t) - read_bytes);
-    //     read_bytes += n;
-    // } while (read_bytes < sizeof(packet_t));
-
-    // memcpy(packet, buf, sizeof(packet_t));
-
-    char buf[100] = {0};
-    int n;
+    uint8_t buf[sizeof(packet_t)];
     int read_bytes = 0;
-    do
+
+    do  
     {
-        n = read(fd, buf + read_bytes, 100-read_bytes);
+        int n = read(fd, buf + read_bytes, sizeof(packet_t) - read_bytes);
         read_bytes += n;
-    } while (read_bytes < 100 && buf[read_bytes-1] != '\n');
+    } while (read_bytes < sizeof(packet_t));
 
-    if (n>0)
-    {
-        sscanf(buf, "x: %f, y: %f, theta: %f, v: %f, w: %f", &packet->x, &packet->y, &packet->theta, &packet->v, &packet->w);
-    }
-    else
-    {
-        exit(1);
-    }
-
+    memcpy(packet, buf, sizeof(packet_t));
 }

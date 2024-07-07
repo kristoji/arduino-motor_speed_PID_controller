@@ -34,6 +34,7 @@ typedef struct od_status_s {
 void update_odometry(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right);
 void update_velocity(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right);
 void print_odometry(od_status_t *status, state_t* enc);
+void send_odometry(od_status_t *status);
 
 // sin(theta) / theta
 float taylor_s(float theta);

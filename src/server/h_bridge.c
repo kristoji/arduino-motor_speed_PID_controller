@@ -2,7 +2,7 @@
 
 void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask)
 {
-  UART_putString((uint8_t*)"Setting up H-Bridge\n");
+  // UART_putString((uint8_t*)"Setting up H-Bridge\n");
 
   // setup timer 1
   TCCR1A=TCCR1A_MASK;

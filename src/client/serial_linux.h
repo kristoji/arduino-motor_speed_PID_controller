@@ -28,6 +28,9 @@ extern "C" {
   //! puts the port in blocking/nonblocking mode
   void serial_set_blocking(int fd, int should_block);
 
+  //! standard init for serial
+  int serial_init(const char* name, int baudrate);
+
 #ifdef __cplusplus
 }
 #endif
