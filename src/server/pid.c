@@ -1,5 +1,28 @@
 #include "pid.h"
 
+volatile int writeIndex = 0;
+volatile uint8_t g_buf[sizeof(target_speed_t)];
+target_speed_t target_speed = {
+    .left_wheel = 0,
+    .right_wheel = 0
+};
+
+ISR(USART0_RX_vect) 
+{
+    uint8_t receivedByte = UDR0;
+    
+    g_buf[writeIndex++] = receivedByte;
+
+    if (writeIndex == sizeof(target_speed_t)) {
+        target_speed = *(target_speed_t*)g_buf;
+        memset(g_buf, 0, sizeof(target_speed_t));
+        get_target_speed(enc, &target_speed);
+        
+        writeIndex = 0;
+    }
+}
+
+
 int clamp(int value, int max)
 {
     if (value > max)
@@ -12,22 +35,6 @@ int clamp(int value, int max)
     }
     return value;
 }
-
-void setup_pid()
-{
-    // UART_putString((uint8_t*)"Setting up PID\n");
-    
-    // set timer
-    TCCR3A = 0;
-    TCCR3B = TCCR3B_MASK;
-    OCR3A = (uint16_t)(15.62*UPDATE_PID_MS);
-    
-    cli();
-    // enable the timer interrupt
-    TIMSK3 |= (1 << OCIE3A);
-    sei();
-}
-
 
 void compute_speed(state_t *enc, uint8_t tot_enc)
 {
@@ -72,7 +79,7 @@ void print_status_pid(state_t *enc, uint8_t tot_enc)
     }
 }
 
-void get_target_speed(state_t *enc, uint8_t tot_enc, target_speed_t *target_speed)
+void get_target_speed(state_t *enc, target_speed_t *target_speed)
 {
 
     enc[0].pid.target_speed = target_speed->right_wheel;

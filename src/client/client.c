@@ -12,7 +12,7 @@ int main(int argc, const char** argv) {
       exit(EXIT_FAILURE);
     }
 
-    int serial_fd = serial_init(argv[1], argv[2]);
+    int serial_fd = serial_init(argv[1], atoi(argv[2]));
     int js_fd = check_open(DEV_JS);
 
     signal(SIGINT, sigint_handler);

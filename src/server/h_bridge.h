@@ -38,9 +38,13 @@
 #include <avr/iom2560.h>        
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
-#include "./avr_common/uart.h" 
 #include "my_uart.h"
 #include "shaft_encoder.h"
+
+
+/*************************************************
+ *                  PWM MACROS                   *
+ *************************************************/
 
 // phase-correct PWM, non inverted, max 20KHz
 #define TCCR1A_MASK (1<<WGM10)|(1<<COM1A1)|(1<<COM1B1)
@@ -50,9 +54,21 @@
 #define TCCR2B_MASK (1<<CS21)
 
 
-void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask);
+// PIN 9-12: PORTH's 6th bit, PORTB's 4-6th bits
 
-char get_input_hbridge(void);
+// PORTB
+#define M_12 1<<6
+#define M_11 1<<5
+
+#define M_10 1<<4
+// PORTH
+#define M_09 1<<6
+
+#define PWMB_MASK (M_12 | M_11 | M_10)
+#define PWMH_MASK (M_09)
+
+
+void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask);
 
 void update_hbridge(char in);
 

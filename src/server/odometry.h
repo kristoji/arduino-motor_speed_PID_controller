@@ -12,12 +12,10 @@
 #include "my_uart.h"
 #include "pid.h"
 
-// #define WHEEL_RADIUS 0.045
-// #define WHEEL_DISTANCE 0.3
 #define WHEEL_RADIUS 4.5
 #define WHEEL_DISTANCE 30
 #define TICKS_PER_REV 8350
-// #define DELTA_T UPDATE_PID_MS
+// #define DELTA_T UPDATE_MS
 #define DELTA_T 0.05
 #define TAYLOR_ORD 6
 
@@ -36,8 +34,3 @@ void update_velocity(od_status_t *status, int32_t delta_enc_left, int32_t delta_
 void print_odometry(od_status_t *status, state_t* enc);
 void send_odometry(od_status_t *status);
 
-// sin(theta) / theta
-float taylor_s(float theta);
-
-// (1 - cos(theta)) / theta
-float taylor_c(float theta);

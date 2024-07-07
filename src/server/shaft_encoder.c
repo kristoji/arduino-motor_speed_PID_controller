@@ -1,12 +1,44 @@
 #include "shaft_encoder.h"
-
-void setup_encoder(uint8_t mask, uint16_t timer_duration_ms)
+ 
+state_t enc[TOTAL_ENCODERS] = 
 {
-  // UART_putString((uint8_t*)"Setting up encoders\n");
+  {
+    {
+      .speed = 0,
+      .old_cnt = 0,
+      .target_speed = 0,
+      .integral_err = 0,
+      .output = 0
+    },
+    .counter = 0,
+    .prev_value = 0b11,
+    .curr_value = 0b11,
+    .msk_0 = M_50,
+    .msk_1 = M_52
+  },
+  {
+    {
+      .speed = 0,
+      .old_cnt = 0,
+      .target_speed = 0,
+      .integral_err = 0,
+      .output = 0
+    },
+    .counter = 0,
+    .prev_value = 0b11,
+    .curr_value = 0b11,
+    .msk_0 = M_53,
+    .msk_1 = M_51
+  },
+};
 
-  // set sleep mode
-  set_sleep_mode(SLEEP_MODE_IDLE);
-  
+ISR (PCINT0_vect)
+{
+  update_encoder(enc, TOTAL_ENCODERS);
+}
+
+void setup_encoder(uint8_t mask)
+{  
   // set as input
   DDRB &= ~mask;
   // enable pull up resistor
@@ -15,17 +47,10 @@ void setup_encoder(uint8_t mask, uint16_t timer_duration_ms)
   // set interrupt on change, looking up PCMSK0
   PCICR |= (1 << PCIE0); 
 
-  // set timer
-  TCCR5A = 0;
-  TCCR5B = (1 << WGM52) | (1 << CS50) | (1 << CS52);
-  OCR5A = (uint16_t)(15.62*timer_duration_ms);
-
   // clear interrupt
   cli();
   // set PCINT0 to trigger an interrupt on state change 
   PCMSK0 |= mask;   
-  // enable the timer interrupt
-  TIMSK5 |= (1 << OCIE5A);
   // enable interrupt
   sei();
 }
