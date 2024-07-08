@@ -1,6 +1,17 @@
+/**************************************************\
+ * @file jstick.c                         
+ *
+ * @brief Implementation of functions to handle joystick
+\**************************************************/
 #include "jstick.h"
 
+/**************************************************\
+ * @brief saves the last joystick event on x axis
+\**************************************************/
 struct js_event last_event_x;
+/**************************************************\
+ * @brief saves the last joystick event on y axis
+\**************************************************/
 struct js_event last_event_y;
 
 int check_open(const char* name)

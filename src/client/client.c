@@ -1,3 +1,8 @@
+/**************************************************\
+ * @file client.c                         
+ *
+ * @brief Implementation of the main client function
+\**************************************************/
 #include "client.h"
 
 void sigint_handler(int signum) {

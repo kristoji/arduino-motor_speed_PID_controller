@@ -1,15 +1,9 @@
-#pragma once
-
-/*
- * A shaft encoder is a device used to determine the angular 
- * position of a wheel. 
- * Its outputs are two digital signals (A, and B)
- * The "angular position" of the wheel is incremented/decremented 
- * depending on the transitions of the two signals, according to the 
- * following state machine.
+/**************************************************\
+ * @file shaft_encoder.h                         
  *
-*/
-
+ * @brief Header for encoder functions
+\**************************************************/
+#pragma once
 #include <util/delay.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -25,20 +19,38 @@
 
 // PIN 50-53: PORTB's 0-3th bits
 
-// encoder 0
+
+/**************************************************\
+ * @brief Encoder right A pin mask
+\**************************************************/
 #define M_52 (1<<1)
+/**************************************************\
+ * @brief Encoder right B pin mask
+\**************************************************/
 #define M_50 (1<<3)
-// encoder 1
+/**************************************************\
+ * @brief Encoder left A pin mask
+\**************************************************/
 #define M_53 (1<<0)
+/**************************************************\
+ * @brief Encoder left B pin mask
+\**************************************************/
 #define M_51 (1<<2)
 
-// total mask to set the pins as input
+/**************************************************\
+ * @brief Encoder total mask
+\**************************************************/
 #define ENC_MASK (M_50 | M_51 | M_52 | M_53)
 
 
 
-// ' -> ' is the positive direction of the wheel 
-// ' <- ' is the negative direction of the wheel
+/**************************************************\
+ * @brief transition table for the encoder
+ * 
+ * @cite 
+ * ' -> ' is the positive direction of the wheel 
+ * ' <- ' is the negative direction of the wheel
+\**************************************************/
 volatile static const int8_t _transition_table []=
 {
       0,  // 00 -> 00
@@ -61,10 +73,30 @@ volatile static const int8_t _transition_table []=
 
 
 
+/**************************************************\
+ * @brief Setups the encoder pins and interrupts
+ * 
+ * @param mask The mask of the encoder
+\**************************************************/
 void setup_encoder(uint8_t mask);
 
+/**************************************************\
+ * @brief Updates the encoder values
+ * 
+ * @param wheels The wheels to update
+ * @param tot_wheels The total number of wheels
+\**************************************************/
 void update_encoder(state_t *wheels, uint8_t tot_wheels);
 
+/**************************************************\
+ * @brief Prints the encoder values
+ * 
+ * @param wheels The wheels to print
+ * @param tot_wheels The total number of wheels
+\**************************************************/
 void print_status_encoder(state_t *wheels, uint8_t tot_wheels);
 
+/**************************************************\
+ * @brief ISR to update the encoder counter on change
+\**************************************************/
 ISR (PCINT0_vect);

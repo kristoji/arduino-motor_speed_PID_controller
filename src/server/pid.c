@@ -1,7 +1,21 @@
+/**************************************************\
+ * @file pid.c                         
+ *
+ * @brief Implementation of functions to control the motors speed
+\**************************************************/
 #include "pid.h"
 
+/**************************************************\
+ * @brief Index to write to the buffer
+\**************************************************/
 volatile int writeIndex = 0;
+/**************************************************\
+ * @brief Buffer to store the received data
+\**************************************************/
 volatile uint8_t g_buf[sizeof(target_delta_t)];
+/**************************************************\
+ * @brief Stores the received values from the client
+\**************************************************/
 target_delta_t target_delta_enc = {
     .left_wheel = 0,
     .right_wheel = 0

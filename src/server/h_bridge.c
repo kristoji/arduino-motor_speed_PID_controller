@@ -1,3 +1,8 @@
+/**************************************************\
+ * @file h_bridge.c                         
+ *
+ * @brief Implementation of functions to handle h_bridge
+\**************************************************/
 #include "h_bridge.h"
 
 void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask)

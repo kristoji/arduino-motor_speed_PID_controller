@@ -1,5 +1,14 @@
+/**************************************************\
+ * @file shaft_encoder.c                         
+ *
+ * @brief Implementation of functions to handle encoders
+\**************************************************/
 #include "shaft_encoder.h"
- 
+
+
+/**************************************************\
+ * @brief The wheels state to control
+\**************************************************/
 state_t wheels[TOTAL_WHEELS] = 
 {
   {

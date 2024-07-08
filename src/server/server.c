@@ -1,3 +1,8 @@
+/**************************************************\
+ * @file server.c                         
+ *
+ * @brief Implementation of the main server function
+\**************************************************/
 #include "server.h"
 
 int main(void)

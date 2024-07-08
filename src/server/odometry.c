@@ -1,5 +1,13 @@
+/**************************************************\
+ * @file odometry.c                         
+ *
+ * @brief Implementation of functions to compute and send odometry
+\**************************************************/
 #include "odometry.h"
 
+/**************************************************\
+ * @brief current odometry values of the robot
+\**************************************************/
 od_status_t od_status = {
     .x = 0,
     .y = 0,
@@ -7,6 +15,9 @@ od_status_t od_status = {
     .v = 0,
     .w = 0
 }; 
+/**************************************************\
+ * @brief Previous odometry values of the robot
+\**************************************************/
 od_status_t od_status_old = {
     .x = -1,
     .y = 1,
@@ -43,7 +54,7 @@ void update_odometry(od_status_t *status, int32_t delta_enc_left, int32_t delta_
 }
 
 
-void print_odometry(od_status_t *status, state_t* enc)
+void print_odometry(od_status_t *status)
 {
     uint8_t out[1024];
     sprintf(out, "x: %f, y: %f, theta: %f, v: %f, w: %f\n\0", status->x, status->y, status->theta, status->v, status->w);

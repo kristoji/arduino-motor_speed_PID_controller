@@ -1,5 +1,13 @@
+/**************************************************\
+ * @file time.c                         
+ *
+ * @brief Implementation of functions to handle time
+\**************************************************/
 #include "time.h"
 
+/**************************************************\
+ * @brief Flag to indicate the timer interrupt
+\**************************************************/
 volatile uint8_t timer_irq = 0;
 
 void setup_update_timer()

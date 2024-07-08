@@ -1,3 +1,8 @@
+/**************************************************\
+ * @file server.h                         
+ *
+ * @brief Header for the main server function
+\**************************************************/
 #pragma once
 #include <util/delay.h>
 #include <stdio.h>

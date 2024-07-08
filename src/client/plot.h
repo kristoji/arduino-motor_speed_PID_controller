@@ -14,18 +14,22 @@
 
 
 /**************************************************\
- * @brief Initializes the gnuplot process
+ * @brief Initializes the gnuplot pipe
 \**************************************************/
 void init_gnuplot();
 
 /**************************************************\
- * @brief Closes the gnuplot process
+ * @brief Closes the gnuplot pipe
 \**************************************************/
 void close_gnuplot();
 
 /**************************************************\
  * @brief Plots the values with gnuplot
  * 
- * @param values The values to plot
+ * @param x The x value to plot
+ * @param y The y value to plot
+ * @param theta The angle to plot
+ * @param v The linear velocity to plot
+ * @param w The angular velocity to plot
 \**************************************************/
 void plot_with_gnuplot(float x, float y, float theta, float v, float w);
