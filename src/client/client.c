@@ -50,6 +50,7 @@ int main(int argc, const char** argv) {
     pthread_join(js_thread_id, NULL);
     pthread_join(plot_thread_id, NULL);
     close(js_fd);
+    reset_arduino(serial_fd);
     close(serial_fd);
     printf("Program ended\n");
 

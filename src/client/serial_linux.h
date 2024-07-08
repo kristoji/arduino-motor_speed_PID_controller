@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/ioctl.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,6 +31,9 @@ extern "C" {
 
   //! standard init for serial
   int serial_init(const char* name, int baudrate);
+
+  //! resets the arduino
+  void reset_arduino(int fd);
 
 #ifdef __cplusplus
 }

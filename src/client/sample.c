@@ -16,21 +16,21 @@ void* sample(void* arg)
     uint8_t buf[100];
     int n = read(fd, buf, 100);
 
-    packet_t packet;
+    packet_t packet = {0};
     uint16_t prev_timestamp = -1;
 
     init_gnuplot();
 
     while (keep_running) 
     {
-        receive_packet(fd, &packet);
-        
         if (debug)
         {
             printf("received x: %f, y: %f, theta: %f, v: %f, w: %f\n", packet.x, packet.y, packet.theta, packet.v, packet.w);
         }
 
         plot_with_gnuplot(packet.x, packet.y, packet.theta, packet.v, packet.w);
+        
+        receive_packet(fd, &packet);
     }
 
     close_gnuplot();
@@ -45,7 +45,7 @@ void receive_packet(int fd, packet_t* packet)
     {
         int n = read(fd, buf + read_bytes, sizeof(packet_t) - read_bytes);
         read_bytes += n;
-    } while (read_bytes < sizeof(packet_t));
+    } while (read_bytes < sizeof(packet_t) && keep_running);
 
     memcpy(packet, buf, sizeof(packet_t));
 }

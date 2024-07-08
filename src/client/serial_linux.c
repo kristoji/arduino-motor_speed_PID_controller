@@ -90,6 +90,15 @@ int serial_open(const char* name) {
   if (fd < 0) {
     printf ("error %d opening serial, fd %d\n", errno, fd);
   }
+  reset_arduino(fd);
   return fd;
 }
 
+void reset_arduino(int fd) 
+{
+  // Manually toggle DTR to reset Arduino
+  int dtr_flag = TIOCM_DTR;
+  ioctl(fd, TIOCMBIC, &dtr_flag); // Clear DTR
+  usleep(10000);                  // Wait 10ms
+  ioctl(fd, TIOCMBIS, &dtr_flag); // Set DTR
+}

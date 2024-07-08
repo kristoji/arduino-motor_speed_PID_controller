@@ -11,12 +11,12 @@
 
 #include "my_uart.h"
 #include "pid.h"
+#include "time.h"
 
 #define WHEEL_RADIUS 4.5
 #define WHEEL_DISTANCE 30
 #define TICKS_PER_REV 8350
-// #define DELTA_T UPDATE_MS
-#define DELTA_T 0.05
+#define DELTA_T (UPDATE_MS/1000.0)
 #define TAYLOR_ORD 6
 
 #define PI 3.141592
@@ -33,4 +33,5 @@ void update_odometry(od_status_t *status, int32_t delta_enc_left, int32_t delta_
 void update_speed(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right);
 void print_odometry(od_status_t *status, state_t* enc);
 void send_odometry(od_status_t *status);
+uint8_t equal(od_status_t *status1, od_status_t *status2);
 

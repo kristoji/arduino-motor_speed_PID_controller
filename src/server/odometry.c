@@ -7,6 +7,13 @@ od_status_t od_status = {
     .v = 0,
     .w = 0
 }; 
+od_status_t od_status_old = {
+    .x = -1,
+    .y = 1,
+    .theta = 0,
+    .v = 0,
+    .w = 0
+}; 
 
 void update_speed(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right)
 {
@@ -43,13 +50,22 @@ void print_odometry(od_status_t *status, state_t* enc)
     UART_putString(out);
 }
 
+uint8_t equal(od_status_t *status1, od_status_t *status2)
+{
+    return (status1->x == status2->x) && (status1->y == status2->y) && (status1->theta == status2->theta) && (status1->v == status2->v) && (status1->w == status2->w);
+}
+
 void send_odometry(od_status_t *status)
 {
-    uint8_t* p = (uint8_t*) status;
-
-    for(uint8_t i = 0; i < sizeof(od_status_t); ++i)
+    if (!equal(status, &od_status_old))
     {
-        UART_putChar(*p);
-        ++p;
+        od_status_old = *status;
+        uint8_t* p = (uint8_t*) status;
+
+        for(uint8_t i = 0; i < sizeof(od_status_t); ++i)
+        {
+            UART_putChar(*p);
+            ++p;
+        }
     }
 } 
