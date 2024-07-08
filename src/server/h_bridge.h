@@ -70,8 +70,6 @@
 
 void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask);
 
-void update_hbridge(char in);
-
-void control_hbridge(state_t *enc, uint8_t tot_enc);
+void control_hbridge(state_t *wheels);
 
 void print_status_hbridge(void);

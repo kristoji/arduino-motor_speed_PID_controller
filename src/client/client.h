@@ -24,3 +24,5 @@ target_speed_t speed = {
     .right_wheel = 0
 };
 
+extern uint8_t debug;
+

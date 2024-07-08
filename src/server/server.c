@@ -15,11 +15,11 @@ int main(void)
     if (timer_irq)
     {
       timer_irq = 0;
-      compute_speed(enc, TOTAL_ENCODERS);
-      update_pid(enc, TOTAL_ENCODERS);
-      update_odometry(&od_status, enc[1].pid.speed, enc[0].pid.speed);
+      compute_delta_enc(wheels, TOTAL_WHEELS);
+      update_pid(wheels, TOTAL_WHEELS);
+      update_odometry(&od_status, wheels[LEFT_IDX].delta_enc, wheels[RIGHT_IDX].delta_enc);
       send_odometry(&od_status);
-      control_hbridge(enc, TOTAL_ENCODERS);
+      control_hbridge(wheels);
     }
     sleep_mode();
   }

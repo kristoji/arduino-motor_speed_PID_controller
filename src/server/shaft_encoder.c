@@ -1,40 +1,40 @@
 #include "shaft_encoder.h"
  
-state_t enc[TOTAL_ENCODERS] = 
+state_t wheels[TOTAL_WHEELS] = 
 {
   {
     {
-      .speed = 0,
-      .old_cnt = 0,
-      .target_speed = 0,
-      .integral_err = 0,
-      .output = 0
+      .counter = 0,
+      .prev_value = 0b11,
+      .curr_value = 0b11,
+      .msk_0 = M_50,
+      .msk_1 = M_52
     },
-    .counter = 0,
-    .prev_value = 0b11,
-    .curr_value = 0b11,
-    .msk_0 = M_50,
-    .msk_1 = M_52
+    .old_cnt = 0,
+    .delta_enc = 0,
+    .target_delta_enc = 0,
+    .integral_err = 0,
+    .output_pid = 0
   },
   {
     {
-      .speed = 0,
-      .old_cnt = 0,
-      .target_speed = 0,
-      .integral_err = 0,
-      .output = 0
+      .counter = 0,
+      .prev_value = 0b11,
+      .curr_value = 0b11,
+      .msk_0 = M_53,
+      .msk_1 = M_51
     },
-    .counter = 0,
-    .prev_value = 0b11,
-    .curr_value = 0b11,
-    .msk_0 = M_53,
-    .msk_1 = M_51
+    .old_cnt = 0,
+    .delta_enc = 0,
+    .target_delta_enc = 0,
+    .integral_err = 0,
+    .output_pid = 0
   },
 };
 
 ISR (PCINT0_vect)
 {
-  update_encoder(enc, TOTAL_ENCODERS);
+  update_encoder(wheels, TOTAL_WHEELS);
 }
 
 void setup_encoder(uint8_t mask)
@@ -55,31 +55,31 @@ void setup_encoder(uint8_t mask)
   sei();
 }
 
-void update_encoder(state_t *enc, int tot_enc)
+void update_encoder(state_t *wheels, uint8_t tot_wheels)
 {
-  for (int i = 0; i < tot_enc; i++) 
+  for (int i = 0; i < tot_wheels; i++) 
   {
-    enc[i].prev_value = enc[i].curr_value;
+    wheels[i].enc.prev_value = wheels[i].enc.curr_value;
 
-    enc[i].curr_value = 
-      ((PINB & enc[i].msk_1)? 0b10 : 0) | ((PINB & enc[i].msk_0)? 0b01 : 0);
+    wheels[i].enc.curr_value = 
+      ((PINB & wheels[i].enc.msk_1)? 0b10 : 0) | ((PINB & wheels[i].enc.msk_0)? 0b01 : 0);
     
-    uint8_t idx = ((enc[i].prev_value << 2) | (enc[i].curr_value));
-    enc[i].counter += _transition_table[idx];
+    uint8_t idx = ((wheels[i].enc.prev_value << 2) | (wheels[i].enc.curr_value));
+    wheels[i].enc.counter += _transition_table[idx];
 
   }
 }
 
-void print_status_encoder(state_t *enc, int tot_enc) 
+void print_status_encoder(state_t *wheels, uint8_t tot_wheels)
 {
-  for (int i = 0; i < tot_enc; i++) 
+  for (int i = 0; i < tot_wheels; i++) 
   {     
     unsigned char out[1024];
     sprintf((char*) out, 
       "encoder: [%d]\n"
       "counter value = %d\n\n",
       i, 
-      enc[i].counter
+      wheels[i].enc.counter
     );
     UART_putString(out);
   }

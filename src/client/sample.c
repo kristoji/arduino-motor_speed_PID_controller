@@ -6,6 +6,8 @@
 
 #include "sample.h"
 
+uint8_t debug = 0;
+
 void* sample(void* arg)
 {
     int fd = *(int*)arg;
@@ -22,7 +24,11 @@ void* sample(void* arg)
     while (keep_running) 
     {
         receive_packet(fd, &packet);
-        printf("received x: %f, y: %f, theta: %f, v: %f, w: %f\n", packet.x, packet.y, packet.theta, packet.v, packet.w);
+        
+        if (debug)
+        {
+            printf("received x: %f, y: %f, theta: %f, v: %f, w: %f\n", packet.x, packet.y, packet.theta, packet.v, packet.w);
+        }
 
         plot_with_gnuplot(packet.x, packet.y, packet.theta, packet.v, packet.w);
     }

@@ -21,57 +21,28 @@ void setup_hbridge(uint8_t portb_mask, uint8_t porth_mask)
   DDRH |= porth_mask;
 }
 
-void update_hbridge(char in)
+void control_hbridge(state_t *wheels)
 {
-    static short int intensity = 0;
-
-    if (in == 'h' && intensity+8 <= 255)
-    {
-      intensity += 8;
-    }
-    else if (in == 'l' && intensity-8 >= -255)
-    {
-      intensity -= 8;
-    }
-
-    if (intensity > 0)
-    {
-      OCR1AL = intensity;
-      OCR1BL = 0;
-			OCR2A = intensity;
-			OCR2B = 0;
-    }
-    else
-    {
-      OCR1AL = 0;
-      OCR1BL = -intensity;
-			OCR2A = 0;
-			OCR2B = -intensity;
-    }
-}
-
-void control_hbridge(state_t *enc, uint8_t tot_enc)
-{
-  if (enc[0].pid.output > 0)
+  if (wheels[RIGHT_IDX].output_pid > 0)
   {
-    OCR1AL = enc[0].pid.output;
+    OCR1AL = wheels[RIGHT_IDX].output_pid;
     OCR1BL = 0;
   }
   else
   {
     OCR1AL = 0;
-    OCR1BL = -enc[0].pid.output;
+    OCR1BL = -wheels[RIGHT_IDX].output_pid;
   }
 
-  if (enc[1].pid.output > 0)
+  if (wheels[LEFT_IDX].output_pid > 0)
   {
-    OCR2A = enc[1].pid.output;
+    OCR2A = wheels[LEFT_IDX].output_pid;
     OCR2B = 0;
   }
   else
   {
     OCR2A = 0;
-    OCR2B = -enc[1].pid.output;
+    OCR2B = -wheels[LEFT_IDX].output_pid;
   }
 }
 

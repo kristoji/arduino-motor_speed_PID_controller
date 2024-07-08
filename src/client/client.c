@@ -8,8 +8,13 @@ void sigint_handler(int signum) {
 int main(int argc, const char** argv) {
     if (argc<3) 
     {
-      printf("client.elf <serial_file> <baudrate>\n");
+      printf("client.elf <serial_file> <baudrate> <?debug>\n");
       exit(EXIT_FAILURE);
+    }
+
+    if (argc == 4) 
+    {
+        debug = atoi(argv[3]);
     }
 
     int serial_fd = serial_init(argv[1], atoi(argv[2]));

@@ -8,7 +8,7 @@ od_status_t od_status = {
     .w = 0
 }; 
 
-void update_velocity(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right)
+void update_speed(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right)
 {
     float w_l = ( delta_enc_left / (float) DELTA_T ) * ( 2 * PI / (float) TICKS_PER_REV);
     float w_r = ( delta_enc_right / (float) DELTA_T ) * ( 2 * PI / (float) TICKS_PER_REV);
@@ -22,7 +22,7 @@ void update_velocity(od_status_t *status, int32_t delta_enc_left, int32_t delta_
 
 void update_odometry(od_status_t *status, int32_t delta_enc_left, int32_t delta_enc_right)
 {
-    update_velocity(status, delta_enc_left, delta_enc_right);
+    update_speed(status, delta_enc_left, delta_enc_right);
 
     float delta_ro = status->v * DELTA_T;
     float delta_theta = status->w * DELTA_T;

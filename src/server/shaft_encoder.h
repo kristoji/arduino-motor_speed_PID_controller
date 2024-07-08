@@ -17,7 +17,7 @@
 #include <avr/iom2560.h>        // to avoid error in the IDE
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
-// #include "./avr_common/uart.h" // includes the printf and initializes it
+
 #include "my_uart.h"
 #include "pid.h"
 #include "commons.h"
@@ -26,11 +26,9 @@
 // PIN 50-53: PORTB's 0-3th bits
 
 // encoder 0
-#define ENC_RIGHT_IDX 0
 #define M_52 (1<<1)
 #define M_50 (1<<3)
 // encoder 1
-#define ENC_LEFT_IDX 1
 #define M_53 (1<<0)
 #define M_51 (1<<2)
 
@@ -65,8 +63,8 @@ volatile static const int8_t _transition_table []=
 
 void setup_encoder(uint8_t mask);
 
-void update_encoder(state_t *enc, int tot_enc);
+void update_encoder(state_t *wheels, uint8_t tot_wheels);
 
-void print_status_encoder(state_t *enc, int tot_enc);
+void print_status_encoder(state_t *wheels, uint8_t tot_wheels);
 
 ISR (PCINT0_vect);

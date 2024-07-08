@@ -28,5 +28,8 @@ $(BINS): $(OBJS)
 run: $(BINS)
 	./$(BINS) /dev/ttyACM0 19200
 
+debug: $(BINS)
+	./$(BINS) /dev/ttyACM0 19200 1
+
 clean:
 	rm -rf *~ $(BINS) $(OBJS) $(OBJS:.o=.d)

@@ -18,24 +18,24 @@
 #define Ki 0.125
 
 
-typedef struct target_speed_s {
+typedef struct target_delta_s {
     int16_t left_wheel;
     int16_t right_wheel;
-} target_speed_t;
+} target_delta_t;
 
-extern state_t enc[TOTAL_ENCODERS];
+extern state_t wheels[TOTAL_WHEELS];
 
 
 int clamp(int value, int max);
 
 void setup_update_timer(void);
 
-void compute_speed(state_t *enc, uint8_t tot_enc);
+void compute_delta_enc(state_t *wheels, uint8_t tot_wheels);
 
-void update_pid(state_t *enc, uint8_t tot_enc);
+void update_pid(state_t *wheels, uint8_t tot_wheels);
 
-void print_status_pid(state_t *enc, uint8_t tot_enc);
+void print_status_pid(state_t *wheels, uint8_t tot_wheels);
 
-void get_target_speed(state_t *enc, target_speed_t *target_speed);
+void set_target_delta_enc(state_t *wheels, target_delta_t *target_delta_enc);
 
 ISR(USART0_RX_vect);

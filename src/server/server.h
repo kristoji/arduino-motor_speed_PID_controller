@@ -16,6 +16,6 @@
 #include "time.h"
 
 extern volatile uint8_t timer_irq;
-extern state_t enc[TOTAL_ENCODERS];
+extern state_t wheels[TOTAL_WHEELS];
 extern od_status_t od_status;
 

@@ -1,8 +1,8 @@
 #include "pid.h"
 
 volatile int writeIndex = 0;
-volatile uint8_t g_buf[sizeof(target_speed_t)];
-target_speed_t target_speed = {
+volatile uint8_t g_buf[sizeof(target_delta_t)];
+target_delta_t target_delta_enc = {
     .left_wheel = 0,
     .right_wheel = 0
 };
@@ -13,10 +13,10 @@ ISR(USART0_RX_vect)
     
     g_buf[writeIndex++] = receivedByte;
 
-    if (writeIndex == sizeof(target_speed_t)) {
-        target_speed = *(target_speed_t*)g_buf;
-        memset(g_buf, 0, sizeof(target_speed_t));
-        get_target_speed(enc, &target_speed);
+    if (writeIndex == sizeof(target_delta_t)) {
+        target_delta_enc = *(target_delta_t*)g_buf;
+        memset(g_buf, 0, sizeof(target_delta_t));
+        set_target_delta_enc(wheels, &target_delta_enc);
         
         writeIndex = 0;
     }
@@ -36,53 +36,48 @@ int clamp(int value, int max)
     return value;
 }
 
-void compute_speed(state_t *enc, uint8_t tot_enc)
+void compute_delta_enc(state_t *wheels, uint8_t tot_wheels)
 {
-    for (int i = 0; i < tot_enc; i++) 
+    for (int i = 0; i < tot_wheels; i++) 
     {
-        // double speed = (double)(enc->counter - enc->old_cnt)/(double)UPDATE_PID_MS;
-        enc[i].pid.speed = enc[i].counter - enc[i].pid.old_cnt;
-        enc[i].pid.old_cnt = enc[i].counter;
+        wheels[i].delta_enc = wheels[i].enc.counter - wheels[i].old_cnt;
+        wheels[i].old_cnt = wheels[i].enc.counter;
     }
 }
 
-void update_pid(state_t *enc, uint8_t tot_enc)
+void update_pid(state_t *wheels, uint8_t tot_wheels)
 {
-    for (int i = 0; i < tot_enc; i++) 
+    for (int i = 0; i < tot_wheels; i++) 
     {
-        int error = enc[i].pid.target_speed - enc[i].pid.speed;
+        int error = wheels[i].target_delta_enc - wheels[i].delta_enc;
         error = clamp(error, 100);
-        int ref_speed = enc[i].pid.speed + error;
+        int ref_speed = wheels[i].delta_enc + error;
 
-        enc[i].pid.integral_err = clamp(enc[i].pid.integral_err + error, 100);
-        enc[i].pid.output = ref_speed +  Kp * error + Ki * enc[i].pid.integral_err;
+        wheels[i].integral_err = clamp(wheels[i].integral_err + error, 100);
+        wheels[i].output_pid = ref_speed +  Kp * error + Ki * wheels[i].integral_err;
 
-        enc[i].pid.output = clamp(enc[i].pid.output, 255);
+        wheels[i].output_pid = clamp(wheels[i].output_pid, 255);
     }
 }
 
-void print_status_pid(state_t *enc, uint8_t tot_enc)
+void print_status_pid(state_t *wheels, uint8_t tot_wheels)
 {
-    for (int i = 0; i < tot_enc; i++) 
+    for (int i = 0; i < tot_wheels; i++) 
     {
         unsigned char out[1024];
         sprintf((char*) out, 
             "encoder. [%d]\n"
             "speed: %d\n"
             "target speed: %d\n"
-            // "output: %d\n\n", 
             "integral: %d\n\n", 
-            // i, enc[i].pid.speed, enc[i].pid.target_speed, enc[i].pid.output
-            i, enc[i].pid.speed, enc[i].pid.target_speed, enc[i].pid.integral_err
+            i, wheels[i].delta_enc, wheels[i].target_delta_enc, wheels[i].integral_err
         );
         UART_putString(out);
     }
 }
 
-void get_target_speed(state_t *enc, target_speed_t *target_speed)
+void set_target_delta_enc(state_t *wheels, target_delta_t *target_delta_enc)
 {
-
-    enc[0].pid.target_speed = target_speed->right_wheel;
-    enc[1].pid.target_speed = target_speed->left_wheel;
-
+    wheels[RIGHT_IDX].target_delta_enc = target_delta_enc->right_wheel;
+    wheels[LEFT_IDX].target_delta_enc = target_delta_enc->left_wheel;
 }
